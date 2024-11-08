@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     double num1,num2,result;
     String operador;
+    boolean operadorPresionado = false;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     String digito = codBoton.substring(codBoton.length() - 1);
                     if (resultado.getText().toString().equals("0")) {
                         resultado.setText(digito);
+                        operadorPresionado = false;
                     } else {
                         resultado.append(digito);
                     }
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 resultado.setText("0");
+                operadorPresionado = false;
             }
         });
 
@@ -129,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 operador = "+";
                 num1 = Double.parseDouble(resultado.getText().toString());
-                resultado.setText("");
+                operadorPresionado = true;
+                resultado.append(" + ");
             }
         });
 
@@ -138,7 +142,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 operador = "-";
                 num1 = Double.parseDouble(resultado.getText().toString());
-                resultado.setText("");
+                operadorPresionado = true;
+                resultado.append(" - ");
             }
         });
 
@@ -147,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 operador = "*";
                 num1 = Double.parseDouble(resultado.getText().toString());
-                resultado.setText("");
+                operadorPresionado = true;
+                resultado.append(" * ");
             }
         });
 
@@ -156,31 +162,52 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 operador = "/";
                 num1 = Double.parseDouble(resultado.getText().toString());
-                resultado.setText("");
+                operadorPresionado = true;
+                resultado.append(" / ");
             }
         });
 
         igual.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                num2 = Double.parseDouble(resultado.getText().toString());
-                if(operador.equals("+")){
-                    result = num1 + num2;
-                }
-                if(operador.equals("-")){
-                    result = num1 - num2;
-                }
-                if(operador.equals("*")){
-                    result = num1 * num2;
-                }
-                if(operador.equals("/")){
-                    if(num2 != 0){
-                        result = num1 / num2;
-                    }else {
+                try {
+                    // Extraer solo el número después del operador
+                    String[] partes = resultado.getText().toString().split(" ");
+                    if (partes.length < 2) {
                         resultado.setText("Error");
+                        return;
                     }
+                    num2 = Double.parseDouble(partes[partes.length - 1]); // Obtén el segundo número
+
+                    // Realizar la operación en base al operador seleccionado
+                    switch (operador) {
+                        case "+":
+                            result = num1 + num2;
+                            break;
+                        case "-":
+                            result = num1 - num2;
+                            break;
+                        case "*":
+                            result = num1 * num2;
+                            break;
+                        case "/":
+                            if (num2 != 0) {
+                                result = num1 / num2;
+                            } else {
+                                resultado.setText("Error");
+                                return;
+                            }
+                            break;
+                        default:
+                            resultado.setText("Error");
+                            return;
+                    }
+
+                    // Mostrar el resultado en pantalla
+                    resultado.setText(String.valueOf(result));
+                } catch (NumberFormatException e) {
+                    resultado.setText("Error");
                 }
-                resultado.setText(String.valueOf(result));
             }
         });
     }
