@@ -171,15 +171,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 try {
-                    // Extraer solo el número después del operador
                     String[] partes = resultado.getText().toString().split(" ");
                     if (partes.length < 2) {
                         resultado.setText("Error");
                         return;
                     }
-                    num2 = Double.parseDouble(partes[partes.length - 1]); // Obtén el segundo número
+                    num2 = Double.parseDouble(partes[partes.length - 1]);
 
-                    // Realizar la operación en base al operador seleccionado
                     switch (operador) {
                         case "+":
                             result = num1 + num2;
@@ -202,8 +200,6 @@ public class MainActivity extends AppCompatActivity {
                             resultado.setText("Error");
                             return;
                     }
-
-                    // Mostrar el resultado en pantalla
                     resultado.setText(String.valueOf(result));
                 } catch (NumberFormatException e) {
                     resultado.setText("Error");
